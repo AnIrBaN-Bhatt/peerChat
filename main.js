@@ -34,16 +34,22 @@ const servers = {
 //     audio:true
 // }
 
+let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
 let constraints = {
-    video: {
-        width: { min: 320, ideal: 1280, max: 1920 },
-        height: { min: 240, ideal: 720, max: 1080 },
-        aspectRatio: 1.777777778, // 16:9 aspect ratio
-        facingMode: 'user' // Use the front camera by default
+    video: isMobile ? {
+        width: { min: 320, ideal: 640, max: 1280 },
+        height: { min: 240, ideal: 480, max: 720 },
+        aspectRatio: { ideal: 1.777777778 },
+        facingMode: 'user'
+    } : {
+        width: { min: 640, ideal: 1280, max: 1920 },
+        height: { min: 480, ideal: 720, max: 1080 },
+        aspectRatio: { ideal: 1.777777778 },
+        facingMode: 'user'
     },
     audio: true
-}
-
+};
 
 let init = async () =>{
     client = await AgoraRTM.createInstance(APP_ID)
