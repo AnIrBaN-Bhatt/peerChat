@@ -36,6 +36,38 @@ const servers = {
 
 let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
+// let constraints = {
+//     video: isMobile ? {
+//         width: { min: 320, ideal: 640, max: 1280 },
+//         height: { min: 240, ideal: 480, max: 720 },
+//         aspectRatio: { ideal: 1.777777778 },
+//         facingMode: 'user'
+//     } : {
+//         width: { min: 640, ideal: 1280, max: 1920 },
+//         height: { min: 480, ideal: 720, max: 1080 },
+//         aspectRatio: { ideal: 1.777777778 },
+//         facingMode: 'user'
+//     },
+//     audio: true
+// };
+
+// let init = async () =>{
+//     client = await AgoraRTM.createInstance(APP_ID)
+//     await client.login({uid,token})
+
+//     channel = await client.createChannel(roomId) //createChannel finds a channel with the name specified or just create a new channel
+//     await channel.join()                    //joined the channel
+
+//     channel.on('MemberJoined',handleUserJoined)  //When someone else join this channel handleUserJoined is called
+//     client.on('MessageFromPeer',handleMessageFormPeer)      //anytime the sendMessageToPeer function gets called it gets triggered
+//     channel.on('MemberLeft',handleUserLeft);
+
+//     localStream = await navigator.mediaDevices.getUserMedia(constraints) // request prmission for audio and video
+//     document.getElementById('user-1').srcObject = localStream;
+// }
+
+
+//new 
 let constraints = {
     video: isMobile ? {
         width: { min: 320, ideal: 640, max: 1280 },
@@ -51,20 +83,25 @@ let constraints = {
     audio: true
 };
 
-let init = async () =>{
-    client = await AgoraRTM.createInstance(APP_ID)
-    await client.login({uid,token})
+let init = async () => {
+    try {
+        client = await AgoraRTM.createInstance(APP_ID);
+        await client.login({ uid, token });
 
-    channel = await client.createChannel(roomId) //createChannel finds a channel with the name specified or just create a new channel
-    await channel.join()                    //joined the channel
+        channel = await client.createChannel(roomId);
+        await channel.join();
 
-    channel.on('MemberJoined',handleUserJoined)  //When someone else join this channel handleUserJoined is called
-    client.on('MessageFromPeer',handleMessageFormPeer)      //anytime the sendMessageToPeer function gets called it gets triggered
-    channel.on('MemberLeft',handleUserLeft);
+        channel.on('MemberJoined', handleUserJoined);
+        client.on('MessageFromPeer', handleMessageFormPeer);
+        channel.on('MemberLeft', handleUserLeft);
 
-    localStream = await navigator.mediaDevices.getUserMedia(constraints) // request prmission for audio and video
-    document.getElementById('user-1').srcObject = localStream;
-}
+        localStream = await navigator.mediaDevices.getUserMedia(constraints);
+        document.getElementById('user-1').srcObject = localStream;
+    } catch (error) {
+        console.error('Error accessing media devices:', error);
+        alert('Could not access camera and microphone. Please check permissions.');
+    }
+} 
 
 let handleUserLeft = async (MemberId) =>{
     document.getElementById('user-2').style.display = 'none';
